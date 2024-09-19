@@ -4,6 +4,7 @@ import ToggleControls from './components/toggleControls';
 
 function App() {
   const [networkData, setNetworkData] = useState(null);
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     // Function to simulate API call
@@ -24,13 +25,14 @@ function App() {
         }
       };
       setNetworkData(mockApiResponse);
+      setAnimationKey(prevKey => prevKey + 1);  // Increment key to trigger new animation
     };
 
     // Initial fetch
     fetchData();
 
     // Set up interval to fetch data every 10 seconds
-    const intervalId = setInterval(fetchData, 15000);
+    const intervalId = setInterval(fetchData, 4000);
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
@@ -44,7 +46,7 @@ function App() {
       height: '100vh' 
     }}>
       <div style={{ gridRow: '1 / span 2' }}>
-        {networkData && <NeuralNetwork data={networkData} />}
+        {networkData && <NeuralNetwork data={networkData} key={animationKey} />}
       </div>
       <div style={{ padding: '20px' }}>
         <h2>Upper Right Section</h2>
@@ -110,7 +112,7 @@ function NeuralNetwork({ data }) {
               fill={layer3Colors[l3Index % layer3Colors.length]}>
               <animateMotion
                 dur="1.5s"
-                repeatCount="indefinite"
+                repeatCount="1"  // Changed to "1" to animate only once
                 path={`M100,200 L400,${100 + l2Index * 150} L700,${150 + l3Index * 200}`}
                 begin={`${getDelay(l2Index, i)}s`}
               />
